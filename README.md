@@ -5,6 +5,8 @@ This repository provides a standalone deployment and demonstration setup for the
 ## Repository Structure
 
 - **`libs/`** – The dynamic middleware library files (.so) for various ROS2 distributions.
+- **`rmw_bandit.humble`** - The custom RMW implementation (humble)
+- **`rmw_bandit.jazzy`** - The custom RMW implementation (jazzy)
 - **`statemachine/`** - State Machine node implementation in Python.
 - **`bandit_broker/`** – The backend (broker + API server) and the frontend web application.
 - **`test-control/`** – A simulated control node publishing mock control signals.
