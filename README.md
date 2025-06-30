@@ -10,6 +10,8 @@ This repository provides a standalone deployment and demonstration setup for the
 - **`test-control/`** – A simulated control node publishing mock control signals.
 - **`test-robot/`** – A simulated robot that publishes video and TF data.
 
+(See the READMEs in the subfolders for further details.)
+
 ## Usage Overview
 
 This system is designed to demonstrate the runtime blocking/unblocking of ROS 2 topics using dynamic policies and ZeroMQ-based coordination. The RMW wrapper `rmw_bandit` intercepts publishing and enables per-topic filtering.
