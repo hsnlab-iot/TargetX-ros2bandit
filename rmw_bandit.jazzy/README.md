@@ -1,4 +1,4 @@
-# rmw_bandit (humble)
+# rmw_bandit (jazzy)
 
 `rmw_bandit` is a custom RMW (ROS 2 Middleware) implementation that integrates ZeroMQ-based dynamic control and monitoring of ROS 2 topics, allowing external brokers and controllers to observe, block/unblock, and watch traffic at runtime. It enables runtime introspection and reactive behavior based on system context.
 
