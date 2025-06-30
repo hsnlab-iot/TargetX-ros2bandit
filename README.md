@@ -22,18 +22,6 @@ Build and launch the full setup with Docker Compose:
 docker-compose up --build
 ```
 
-Access the GUI dashboard at:
-
-```
-https://localhost:8443
-```
-
-Optional: Manually rebuild `librmw_bandit.so` and copy it using the helper script:
-
-```bash
-bash build_rmw_bandit.sh
-```
-
 ## Notes
 
 - Environment variables like `RMW_IMPLEMENTATION`, `ROS2BANDIT_BROKER`, and `ROS2BANDIT_DOMAIN` are configured in `docker-compose.yml`.
