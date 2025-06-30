@@ -1,0 +1,87 @@
+system:
+  rate_hz: 2
+  location_check_m: 0.02
+  topic_duration_s: 0.5
+
+state_machines:
+  - id: sm1
+    states:
+    - idle
+    - active_1
+    - moving_1
+    - action_1
+  - id: sm2
+    states:
+    - idle
+    - moving_2
+
+states:
+  - id: idle
+    priority: 99
+    trigger:
+      - or:
+        - id: idle_time
+          time_trigger:
+            last_change: 10
+        - id: fibi_action_end
+          action_trigger: robot1/fibonacci:end
+    blocked_topics:
+    - robot1/video_topic
+    - robot1/video_topic_info
+
+  - id: action_1
+    priority: 98
+    trigger:
+      - id: fibi_action_start
+        action_trigger: robot1/fibonacci:start
+    blocked_topics:
+  
+  - id: active_1
+    priority: 10
+    trigger:
+      - id: active_time
+        time_trigger:
+            last_change: 20
+    blocked_topics:
+
+  - id: moving_1
+    priority: 1
+    trigger:
+      or:
+        - id: cmd_vel_1
+          topic_trigger: robot1/cmd_vel
+        - id: area_0
+          location_trigger: area_0
+    blocked_topics:
+
+  - id: moving_2
+    priority: 1
+    trigger:
+      or:
+        - id: cmd_vel_2
+          topic_trigger: robot2/cmd_vel
+        - id: area_1  
+          location_trigger: not_area_1
+    blocked_topics:
+
+areas:
+  - id: area_0
+    type: polygon
+    tf: base_link
+    ref: map
+    points:
+      - [0, 0]
+      - [2, 0]
+      - [2, 2]
+      - [0, 2]
+
+  - id: not_area_1
+    type: polygon
+    tf: base_link
+    ref: map
+    inverse: true
+    points:
+      - [0, 0]
+      - [0, -1]
+      - [-1, -1]
+      - [-1, 0]

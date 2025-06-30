@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* src/index.css */
+body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+  
+.split {
+  height: 100%;
+}
+
+.split > .gutter {
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+  cursor: row-resize;
+  height: 8px;
+}
+
+/* Smooth transition on fill color for all SVG elements */
+svg * {
+  transition: fill 0.3s ease;
+}
+
+/* State Boxes */
+.state-active-box {
+  fill: #3b82f6 !important;   /* blue */
+}
+.state-inactive-box {
+  fill: #93c5fd !important;   /* light blue */
+}
+
+/* Trigger Boxes */
+.trigger-active-box {
+  fill: #22c55e !important;   /* green */
+}
+.trigger-inactive-box {
+  fill: #d1d5db !important;   /* gray */
+}

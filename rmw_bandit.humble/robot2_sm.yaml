@@ -1,0 +1,49 @@
+system:
+  rate_hz: 2
+  location_check_m: 0.02
+  topic_duration_s: 0.5
+
+state_machines:
+  - id: fred
+    states:
+    - idle
+    - picknplace
+    - hebi_video
+
+states:
+  - id: idle
+    priority: 99
+    trigger:
+      - or:
+        - id: fred_idle
+          time_trigger:
+            last_change: 120
+        - id: picknplace_done
+          action_trigger: robot2/picknplace:end
+    blocked_topics:
+      - robot2/video/color/h264
+      - robot2/video/depth/h264
+      - robot2/dynamic_joint_states
+      - robot2/scaled_joint_trajectory_controller/controller_state
+
+  - id: picknplace
+    priority: 1
+    trigger:
+      - id: picknplace_action
+        action_trigger: robot2/picknplace:start
+    blocked_topics:
+
+  - id: hebi_video
+    priority: 10
+    trigger:
+      and:
+      - id: hebi_video
+        topic_trigger: robot1/video/color/h264
+      - id: state_timer
+        time_trigger:
+          last_change: 5
+    blocked_topics:
+      - robot2/video/color/h264
+      - robot2/video/depth/h264
+      - robot2/dynamic_joint_states
+      - robot2/scaled_joint_trajectory_controller/controller_state

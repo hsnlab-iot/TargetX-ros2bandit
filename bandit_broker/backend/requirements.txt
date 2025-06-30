@@ -1,0 +1,6 @@
+flask
+flask-cors
+zmq
+shapely
+shared-memory-dict
+graphviz

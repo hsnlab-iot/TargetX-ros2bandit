@@ -1,0 +1,55 @@
+system:
+  rate_hz: 2
+  location_check_m: 0.02
+  topic_duration_s: 0.5
+
+state_machines:
+  - id: hebi
+    states:
+      - idle
+      - move
+      - docking
+      - fred_video
+
+states:
+  - id: idle
+    priority: 99
+    trigger:
+      - or:
+        - id: hebi_idle
+          time_trigger:
+            last_change: 120
+        - id: docking_done
+          action_trigger: robot1/docking_action:end
+    blocked_topics:
+      - robot1/video/color/h264
+      - robot1/video/depth/h264
+  
+  - id: move
+    priority: 20
+    trigger:
+      - id: navigation
+        action_trigger: robot1/navigate_to_pose:start
+    blocked_topics:
+      - robot1/video/color/h264
+      - robot1/video/depth/h264
+
+  - id: docking
+    priority: 5
+    trigger:
+      - id: docking
+        action_trigger: robot1/docking_action:start
+    blocked_topics:
+
+  - id: fred_video
+    priority: 10
+    trigger:
+      and:
+      - id: fred_video
+        topic_trigger: robot2/video/color/h264
+      - id: state_time
+        time_trigger:
+          last_change: 5
+    blocked_topics:
+      - robot1/video/color/h264
+      - robot1/video/depth/h264

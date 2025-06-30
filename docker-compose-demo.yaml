@@ -1,0 +1,103 @@
+services:
+
+  state-machine-node:
+    build:
+      context: statemachine
+      dockerfile: Dockerfile.jazzy
+    container_name: statemachine:jazzy
+    volumes:
+      - ./statemachine/example1.yaml:/config/statemachines.yaml:ro
+    environment:
+      - ROS2BANDIT_BROKER=bandit_backend
+      - ROS2BANDIT_BROKER_PORT=1884
+      - ROS2BANDIT_DOMAIN=robot1
+      - ROS2BANDIT_TOKEN=token-token
+      - STATE_MACHINE_NAME=robot1_sm
+    networks:
+      - banditnet
+
+  test-robot:
+    build:
+      context: test-robot
+      dockerfile: Dockerfile
+    container_name: robot:jazzy
+    privileged: true
+    command: tail -f /dev/null
+    volumes:
+    - ./librmw_bandit.so:/opt/ros/jazzy/lib/librmw_bandit.so:ro
+    environment:
+      - ROS2BANDIT_BROKER=bandit_backend
+      - ROS2BANDIT_BROKER_PORT=1884
+      - ROS2BANDIT_DOMAIN=robot1
+      - ROS2BANDIT_TOKEN=token-token
+      - RMW_IMPLEMENTATION=rmw_bandit
+      - RMW_IMPLEMENTATION_WRAP=rmw_fastrtps_cpp
+    networks:
+      - banditnet
+
+  test-control:
+    build:
+      context: test-control
+      dockerfile: Dockerfile
+    container_name: control:jazzy
+    privileged: true
+    command: tail -f /dev/null
+    volumes:
+    - ./librmw_bandit.so:/opt/ros/jazzy/lib/librmw_bandit.so:ro
+    environment:
+      - ROS2BANDIT_BROKER=bandit_backend
+      - ROS2BANDIT_BROKER_PORT=1884
+      - ROS2BANDIT_DOMAIN=robot1
+      - ROS2BANDIT_TOKEN=token-token
+      - RMW_IMPLEMENTATION=rmw_bandit
+      - RMW_IMPLEMENTATION_WRAP=rmw_fastrtps_cpp
+    networks:
+      - banditnet
+
+  gui:
+    container_name: gui:jazzy
+    image: tiryoh/ros2-desktop-vnc:jazzy
+    security_opt:
+      - seccomp:unconfined
+    shm_size: '512m'
+    ports:
+      - "46000:80"
+    networks:
+      - banditnet
+
+  frontend:
+    build:
+      context: ./bandit_broker/frontend
+      dockerfile: Dockerfile
+    container_name: bandit_frontend
+    volumes:
+      - ./bandit_broker/frontend/ssl:/etc/ssl/certs:ro
+    environment:
+      - BACKEND_HOST=bandit_backend
+      - FRONTEND_HOST=localhost
+      - SSL=1
+      - BASIC_AUTH_USERNAME=admin
+      - BASIC_AUTH_PASSWORD=admin
+    ports:
+      - "8443:443"
+    depends_on:
+      - backend
+    networks:
+      - banditnet
+
+  backend:
+    build:
+      context: ./bandit_broker/backend
+      dockerfile: Dockerfile
+    container_name: bandit_backend
+    environment:
+      - ROS2BANDIT_TOKEN=token-token
+    ports:
+      - "1884:1884"
+      - "5000:5000"
+    networks:
+      - banditnet
+
+networks:
+  banditnet:
+    driver: bridge
